@@ -38,11 +38,18 @@ public class User {
     )
 	private List<User> followings;
 	
-	public User() {
+	public User() {}
+	
+	public User(String name, String email, String password, String phone) {
+		this.name = name;
+		this.email = email;
+		this.password = password;
+		this.phone = phone;
+		
 		followers = new ArrayList<>();
 		followings = new ArrayList<>();
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
