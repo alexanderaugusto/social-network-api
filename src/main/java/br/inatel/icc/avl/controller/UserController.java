@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class UserController {
 	
 	@PostMapping
 	@Transactional
-	public ResponseEntity<UserDto> create(@RequestBody UserForm form, UriComponentsBuilder uriBuilder){
+	public ResponseEntity<UserDto> create(@RequestBody @Valid UserForm form, UriComponentsBuilder uriBuilder){
 		User user = form.toUser();
 		userRepository.save(user);
 		
@@ -44,13 +45,8 @@ public class UserController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<UserDto> list(@PathVariable("id") Long id){
-		Optional<User> optionalUser = userRepository.findById(id);
-		
-		if(optionalUser.isPresent()) {
-			UserDto user = new UserDto(optionalUser.get());
-			return ResponseEntity.status(200).body(user);
-		}
-		
-		return ResponseEntity.status(404).build();
+		User user = userRepository.getOne(id);
+		UserDto userDto = new UserDto(user);
+		return ResponseEntity.status(200).body(userDto);
 	}
 }
