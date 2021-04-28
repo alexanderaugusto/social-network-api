@@ -3,17 +3,44 @@ package br.inatel.icc.avl.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+
+@Entity
 public class User {
 
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
 	private String email;
 	private String password;
 	private String phone;
-	private List<User> friends;
+	@OneToMany(mappedBy = "owner")
+	private List<Post> posts;
+	@ManyToMany
+	@JoinTable(
+            name = "user_followers",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "follower_id")}
+    )
+	private List<User> followers;
+	@ManyToMany
+	@JoinTable(
+            name = "user_followings",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "following_id")}
+    )
+	private List<User> followings;
 	
 	public User() {
-		friends = new ArrayList<>();
+		followers = new ArrayList<>();
+		followings = new ArrayList<>();
 	}
 	
 	public Long getId() {
@@ -36,7 +63,15 @@ public class User {
 		return phone;
 	}
 
-	public List<User> getFriends() {
-		return friends;
+	public List<Post> getPosts() {
+		return posts;
+	}
+
+	public List<User> getFollowers() {
+		return followers;
+	}
+
+	public List<User> getFollowings() {
+		return followings;
 	}
 }
