@@ -1,4 +1,4 @@
-package br.inatel.icc.application;
+package br.inatel.icc.avl;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
