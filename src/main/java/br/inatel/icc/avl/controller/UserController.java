@@ -4,10 +4,15 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,12 +21,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.inatel.icc.avl.controller.dto.PostDto;
 import br.inatel.icc.avl.controller.dto.UserDto;
 import br.inatel.icc.avl.controller.form.UserForm;
+import br.inatel.icc.avl.controller.form.UserFormUpdate;
 import br.inatel.icc.avl.model.User;
 import br.inatel.icc.avl.repository.UserRepository;
 
@@ -32,7 +39,7 @@ public class UserController {
 	private UserRepository userRepository;
 
 	@Autowired
-	public UserController(UserRepository userRepository) {
+	public UserController(UserRepository userRepository, EntityManager em) {
 		this.userRepository = userRepository;
 	}
 
@@ -125,5 +132,41 @@ public class UserController {
 		}
 		
 		return ResponseEntity.status(404).build();
+	}
+	
+	@PutMapping("/{id}")
+	@Transactional
+	public ResponseEntity<UserDto> update(@RequestBody @Valid UserFormUpdate form, @PathVariable("id") Long id){
+		Optional<User> user = userRepository.findById(id);
+		
+		if(user.isPresent()) {
+			User newUser = form.update(user.get());
+			return ResponseEntity.status(200).body(new UserDto(newUser));
+		}
+		
+		return ResponseEntity.status(404).build();
+	}
+	
+	@DeleteMapping("/{id}")
+	@Transactional
+	public ResponseEntity<?> delete(@PathVariable("id") Long id){
+		Optional<User> user = userRepository.findById(id);
+		
+		if(user.isPresent()) {
+			user.get().getFollowers().clear();
+			user.get().getFollowings().clear();
+			userRepository.deleteById(id);
+			return ResponseEntity.status(204).build();
+		}
+		
+		return ResponseEntity.status(404).build();
+	}
+	
+	@GetMapping("/search")
+	public ResponseEntity<Page<UserDto>> search(@RequestParam(required = true, name = "name") String userName,
+			@PageableDefault(sort="name", direction = Direction.ASC, page = 0, size = 10) Pageable pageable){
+		Page<User> users = userRepository.findByNameContainingIgnoreCase(userName, pageable);
+		Page<UserDto> usersDto = UserDto.toDtoPage(users);
+		return ResponseEntity.status(200).body(usersDto);
 	}
 }
