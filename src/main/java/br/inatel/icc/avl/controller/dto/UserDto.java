@@ -3,6 +3,8 @@ package br.inatel.icc.avl.controller.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+
 import br.inatel.icc.avl.model.User;
 
 public class UserDto {
@@ -37,6 +39,11 @@ public class UserDto {
 	
 	public static List<UserDto> toDtoList(List<User> users){
 		List<UserDto> usersDto = users.stream().map(UserDto::new).collect(Collectors.toList());
+		return usersDto;
+	}
+
+	public static Page<UserDto> toDtoPage(Page<User> users) {
+		Page<UserDto> usersDto = users.map(UserDto::new);
 		return usersDto;
 	}
 }
