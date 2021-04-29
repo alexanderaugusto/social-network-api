@@ -37,6 +37,12 @@ public class Post {
 
 	public Post() {
 	}
+	
+	public Post(String description, String media, User owner) {
+		this.description = description;
+		this.media = media;
+		this.owner = owner;
+	}
 
 	public Long getId() {
 		return id;
