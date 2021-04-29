@@ -81,4 +81,28 @@ public class User {
 	public List<User> getFollowings() {
 		return followings;
 	}
+
+	public void addFollower(User user) {
+		if(!followers.contains(user)) {
+			followers.add(user);
+		}
+	}
+	
+	public void addFollowing(User user) {
+		if(!followings.contains(user)) {
+			followings.add(user);
+		}
+	}
+	
+	public void removeFollower(User user) {
+		if(followers.contains(user)) {
+			followers.remove(user);
+		}
+	}
+	
+	public void removeFollowing(User user) {
+		if(followings.contains(user)) {
+			followings.remove(user);
+		}
+	}
 }
