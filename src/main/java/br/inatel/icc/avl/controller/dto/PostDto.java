@@ -10,11 +10,15 @@ public class PostDto {
 	private Long id;
 	private String description;
 	private String media;
+	private int totalReactions;
+	private int totalComments;
 	
 	public PostDto(Post post) {
 		this.id = post.getId();
 		this.description = post.getDescription();
 		this.media = post.getMedia();
+		this.totalReactions = post.getReactions().size();
+		this.totalComments = post.getComments().size();
 	}
 	
 	public Long getId() {
@@ -27,6 +31,14 @@ public class PostDto {
 
 	public String getMedia() {
 		return media;
+	}
+	
+	public int getTotalReactions() {
+		return totalReactions;
+	}
+
+	public int getTotalComments() {
+		return totalComments;
 	}
 
 	public static List<PostDto> toDtoList(List<Post> posts) {
