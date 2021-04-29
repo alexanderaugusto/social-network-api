@@ -9,14 +9,18 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Comment {
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	private String description;
+
 	@ManyToOne
 	private User user;
+
 	@ManyToOne
 	private Post post;
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -24,11 +28,11 @@ public class Comment {
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public User getUser() {
 		return user;
 	}
-	
+
 	public Post getPost() {
 		return post;
 	}
