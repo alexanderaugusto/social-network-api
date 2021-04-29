@@ -12,6 +12,8 @@ public class PostDetailDto {
 	private String description;
 	private String media;
 	private UserDto owner;
+	private int totalReactions;
+	private int totalComments;
 	private List<CommentDto> comments;
 	private List<ReactionDto> reactions;
 	
@@ -20,6 +22,8 @@ public class PostDetailDto {
 		this.description = post.getDescription();
 		this.media = post.getMedia();
 		this.owner = new UserDto(post.getOwner());
+		this.totalReactions = post.getReactions().size();
+		this.totalComments = post.getComments().size();
 		
 		this.comments = new ArrayList<>();
 		this.comments.addAll(post.getComments().stream().map(CommentDto::new).collect(Collectors.toList()));
@@ -43,6 +47,14 @@ public class PostDetailDto {
 
 	public UserDto getOwner() {
 		return owner;
+	}
+
+	public int getTotalReactions() {
+		return totalReactions;
+	}
+
+	public int getTotalComments() {
+		return totalComments;
 	}
 
 	public List<CommentDto> getComments() {
