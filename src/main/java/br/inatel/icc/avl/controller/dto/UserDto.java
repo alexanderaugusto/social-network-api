@@ -1,4 +1,7 @@
-package br.inatel.icc.dto;
+package br.inatel.icc.avl.controller.dto;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import br.inatel.icc.avl.model.User;
 
@@ -30,5 +33,10 @@ public class UserDto {
 	
 	public String getPhone() {
 		return phone;
+	}
+	
+	public static List<UserDto> toDtoList(List<User> users){
+		List<UserDto> usersDto = users.stream().map(UserDto::new).collect(Collectors.toList());
+		return usersDto;
 	}
 }
