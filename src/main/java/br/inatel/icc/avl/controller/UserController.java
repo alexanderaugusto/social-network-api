@@ -145,6 +145,19 @@ public class UserController {
 		return ResponseEntity.status(404).build();
 	}
 	
+	@GetMapping("{id}/follow/{targetId}")
+	@Transactional
+	public ResponseEntity<?> followUser(@PathVariable("id") Long id, @PathVariable("targetId") Long targetId) {
+		Optional<User> user = userRepository.findById(id);
+		Optional<User> targetUser = userRepository.findById(targetId);
+		
+		if(user.isPresent() && targetUser.isPresent() && targetUser.get().isFollowedBy(user.get())) {
+			return ResponseEntity.status(204).build();	
+		}
+		
+		return ResponseEntity.status(404).build();
+	}
+	
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<UserDto> update(@RequestBody @Valid UserFormUpdate form, @PathVariable("id") Long id){
