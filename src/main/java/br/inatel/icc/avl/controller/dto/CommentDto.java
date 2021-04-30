@@ -1,5 +1,8 @@
 package br.inatel.icc.avl.controller.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import br.inatel.icc.avl.model.Comment;
 
 public class CommentDto {
@@ -24,5 +27,10 @@ public class CommentDto {
 
 	public UserDto getUser() {
 		return user;
+	}
+
+	public static List<CommentDto> toDtoList(List<Comment> comments) {
+		List<CommentDto> commentsDto = comments.stream().map(CommentDto::new).collect(Collectors.toList());
+		return commentsDto;
 	}
 }

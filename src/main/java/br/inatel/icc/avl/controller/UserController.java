@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.inatel.icc.avl.controller.dto.PostDetailDto;
 import br.inatel.icc.avl.controller.dto.PostDto;
 import br.inatel.icc.avl.controller.dto.UserDto;
 import br.inatel.icc.avl.controller.form.UserForm;
@@ -205,10 +206,10 @@ public class UserController {
 	
 	@GetMapping("/timeline")
 	@Cacheable(value = "timeline")
-	public ResponseEntity<List<PostDto>> timeline(@PageableDefault(sort = "id", direction = Direction.DESC, page = 0, size = 10) Pageable pageable){
+	public ResponseEntity<List<PostDetailDto>> timeline(@PageableDefault(sort = "id", direction = Direction.DESC, page = 0, size = 10) Pageable pageable){
 		long myId = 1;
 		List<Post> posts = postRepository.findUserTimeline(myId);
-		List<PostDto> postsDto = PostDto.toDtoList(posts);
+		List<PostDetailDto> postsDto = PostDetailDto.toDtoList(posts);
 		return ResponseEntity.status(200).body(postsDto);
 	}
 }
