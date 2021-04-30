@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
@@ -29,7 +28,9 @@ import br.inatel.icc.avl.controller.dto.PostDto;
 import br.inatel.icc.avl.controller.dto.UserDto;
 import br.inatel.icc.avl.controller.form.UserForm;
 import br.inatel.icc.avl.controller.form.UserFormUpdate;
+import br.inatel.icc.avl.model.Follow;
 import br.inatel.icc.avl.model.User;
+import br.inatel.icc.avl.repository.FollowRepository;
 import br.inatel.icc.avl.repository.UserRepository;
 
 @RestController
@@ -37,10 +38,12 @@ import br.inatel.icc.avl.repository.UserRepository;
 public class UserController {
 
 	private UserRepository userRepository;
-
+	private FollowRepository followRepository;
+	
 	@Autowired
-	public UserController(UserRepository userRepository, EntityManager em) {
+	public UserController(UserRepository userRepository, FollowRepository followRepository) {
 		this.userRepository = userRepository;
+		this.followRepository = followRepository;
 	}
 
 	@PostMapping
@@ -110,8 +113,12 @@ public class UserController {
 		Optional<User> userToFollow = userRepository.findById(id);
 		
 		if(userToFollow.isPresent()) {
-			loggedUser.addFollowing(userToFollow.get());
-			userToFollow.get().addFollower(loggedUser);
+			if(userToFollow.get().isFollowedBy(loggedUser)) {
+				return ResponseEntity.status(403).build();
+			}
+			
+			Follow follow = new Follow(loggedUser, userToFollow.get());
+			followRepository.save(follow);
 			return ResponseEntity.status(204).build();
 		}
 		
@@ -126,8 +133,12 @@ public class UserController {
 		Optional<User> userToUnfollow = userRepository.findById(id);
 		
 		if(userToUnfollow.isPresent()) {
-			loggedUser.removeFollowing(userToUnfollow.get());
-			userToUnfollow.get().removeFollower(loggedUser);
+			if(!userToUnfollow.get().isFollowedBy(loggedUser)) {
+				return ResponseEntity.status(403).build();
+			}
+			
+			Follow follow = followRepository.findByFollowerAndFollowing(userToUnfollow, loggedUser);
+			followRepository.deleteById(follow.getId());
 			return ResponseEntity.status(204).build();
 		}
 		
