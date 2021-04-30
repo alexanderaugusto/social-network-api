@@ -29,8 +29,10 @@ import br.inatel.icc.avl.controller.dto.UserDto;
 import br.inatel.icc.avl.controller.form.UserForm;
 import br.inatel.icc.avl.controller.form.UserFormUpdate;
 import br.inatel.icc.avl.model.Follow;
+import br.inatel.icc.avl.model.Post;
 import br.inatel.icc.avl.model.User;
 import br.inatel.icc.avl.repository.FollowRepository;
+import br.inatel.icc.avl.repository.PostRepository;
 import br.inatel.icc.avl.repository.UserRepository;
 
 @RestController
@@ -39,11 +41,13 @@ public class UserController {
 
 	private UserRepository userRepository;
 	private FollowRepository followRepository;
+	private PostRepository postRepository;
 	
 	@Autowired
-	public UserController(UserRepository userRepository, FollowRepository followRepository) {
+	public UserController(UserRepository userRepository, FollowRepository followRepository, PostRepository postRepository) {
 		this.userRepository = userRepository;
 		this.followRepository = followRepository;
+		this.postRepository = postRepository;
 	}
 
 	@PostMapping
@@ -192,5 +196,13 @@ public class UserController {
 		Page<User> users = userRepository.findByNameContainingIgnoreCase(userName, pageable);
 		Page<UserDto> usersDto = UserDto.toDtoPage(users);
 		return ResponseEntity.status(200).body(usersDto);
+	}
+	
+	@GetMapping("/timeline")
+	public ResponseEntity<List<PostDto>> timeline(@PageableDefault(sort = "id", direction = Direction.DESC, page = 0, size = 10) Pageable pageable){
+		long myId = 1;
+		List<Post> posts = postRepository.findUserTimeline(myId);
+		List<PostDto> postsDto = PostDto.toDtoList(posts);
+		return ResponseEntity.status(200).body(postsDto);
 	}
 }
