@@ -3,6 +3,8 @@ package br.inatel.icc.avl.controller.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+
 import br.inatel.icc.avl.model.Post;
 
 public class PostDto {
@@ -43,6 +45,11 @@ public class PostDto {
 
 	public static List<PostDto> toDtoList(List<Post> posts) {
 		List<PostDto> postsDto = posts.stream().map(PostDto::new).collect(Collectors.toList());
+		return postsDto;
+	}
+
+	public static Page<PostDto> toDtoPage(Page<Post> posts) {
+		Page<PostDto> postsDto = posts.map(PostDto::new);
 		return postsDto;
 	}
 
