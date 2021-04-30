@@ -21,6 +21,15 @@ public class Comment {
 	@ManyToOne
 	private Post post;
 
+	public Comment() {
+	}
+	
+	public Comment(String description, User user, Post post) {
+		this.description = description;
+		this.user = user;
+		this.post = post;
+	}
+	
 	public Long getId() {
 		return id;
 	}

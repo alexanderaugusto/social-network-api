@@ -18,6 +18,14 @@ public class Reaction {
 
 	@ManyToOne
 	private Post post;
+	
+	public Reaction() {
+	}
+	
+	public Reaction(User user, Post post) {
+		this.user = user;
+		this.post = post;
+	}
 
 	public Long getId() {
 		return id;
