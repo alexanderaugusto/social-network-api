@@ -4,10 +4,16 @@ import br.inatel.icc.avl.model.Reaction;
 
 public class ReactionDto {
 
+	private Long id;
 	private UserDto user;
 	
-	public ReactionDto(Reaction rection) {
-		this.user = new UserDto(rection.getUser());
+	public ReactionDto(Reaction reaction) {
+		this.id = reaction.getId();
+		this.user = new UserDto(reaction.getUser());
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	public UserDto getUser() {
