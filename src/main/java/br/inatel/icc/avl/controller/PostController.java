@@ -1,6 +1,7 @@
 package br.inatel.icc.avl.controller;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -19,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.inatel.icc.avl.controller.dto.CommentDto;
 import br.inatel.icc.avl.controller.dto.PostDetailDto;
 import br.inatel.icc.avl.controller.dto.PostDto;
+import br.inatel.icc.avl.controller.dto.ReactionDto;
 import br.inatel.icc.avl.controller.form.CommentForm;
 import br.inatel.icc.avl.controller.form.PostForm;
 import br.inatel.icc.avl.model.Comment;
@@ -121,6 +124,20 @@ public class PostController {
 		return ResponseEntity.status(404).build();
 	}
 
+	@GetMapping("/{id}/reactions")
+	@Transactional
+	public ResponseEntity<List<ReactionDto>> listReactions(@PathVariable("id") Long id) {
+		Optional<Post> post = postRepository.findById(id);
+
+		if (post.isPresent()) {
+			List<Reaction> reactions = post.get().getReactions();
+			List<ReactionDto> reactionsDto = ReactionDto.toDtoList(reactions);
+			return ResponseEntity.status(200).body(reactionsDto);
+		}
+
+		return ResponseEntity.status(404).build();
+	}
+	
 	@PutMapping("/{id}/comments")
 	@Transactional
 	public ResponseEntity<?> addComment(@RequestBody @Valid CommentForm form, @PathVariable("id") Long id){
@@ -145,6 +162,20 @@ public class PostController {
 		if (post.isPresent() && comment.isPresent()) {
 			commentRepository.deleteById(commentId);
 			return ResponseEntity.status(204).build();
+		}
+
+		return ResponseEntity.status(404).build();
+	}
+	
+	@GetMapping("/{id}/comments")
+	@Transactional
+	public ResponseEntity<List<CommentDto>> listComments(@PathVariable("id") Long id) {
+		Optional<Post> post = postRepository.findById(id);
+
+		if (post.isPresent()) {
+			List<Comment> comments = post.get().getComments();
+			List<CommentDto> commentsDto = CommentDto.toDtoList(comments);
+			return ResponseEntity.status(200).body(commentsDto);
 		}
 
 		return ResponseEntity.status(404).build();
