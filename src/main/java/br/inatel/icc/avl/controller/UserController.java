@@ -137,13 +137,17 @@ public class UserController {
 		Optional<User> userToUnfollow = userRepository.findById(id);
 		
 		if(userToUnfollow.isPresent()) {
-			if(!userToUnfollow.get().isFollowedBy(loggedUser)) {
-				return ResponseEntity.status(403).build();
-			}
+//			if(!userToUnfollow.get().isFollowedBy(loggedUser)) {
+//				return ResponseEntity.status(403).build();
+//			}
 			
 			Follow follow = followRepository.findByFollowerAndFollowing(userToUnfollow, loggedUser);
-			followRepository.deleteById(follow.getId());
-			return ResponseEntity.status(204).build();
+			try {
+				followRepository.deleteById(follow.getId());
+				return ResponseEntity.status(204).build();
+			} catch (NullPointerException e) {
+				return ResponseEntity.status(403).build();
+			}
 		}
 		
 		return ResponseEntity.status(404).build();
