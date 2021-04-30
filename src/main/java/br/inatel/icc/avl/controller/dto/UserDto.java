@@ -13,12 +13,16 @@ public class UserDto {
 	private String name;
 	private String email;
 	private String phone;
+	private int totalFollowers;
+	private int totalFollowings;
 	
 	public UserDto(User user) {
 		this.id = user.getId();
 		this.name = user.getName();
 		this.email = user.getEmail();
 		this.phone = user.getPhone();
+		this.totalFollowers = user.getFollowers().size();
+		this.totalFollowings = user.getFollowings().size();
 	}
 
 	public Long getId() {
@@ -37,6 +41,14 @@ public class UserDto {
 		return phone;
 	}
 	
+	public int getTotalFollowers() {
+		return totalFollowers;
+	}
+
+	public int getTotalFollowings() {
+		return totalFollowings;
+	}
+
 	public static List<UserDto> toDtoList(List<User> users){
 		List<UserDto> usersDto = users.stream().map(UserDto::new).collect(Collectors.toList());
 		return usersDto;
