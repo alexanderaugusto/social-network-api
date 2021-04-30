@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,6 +53,7 @@ public class PostController {
 
 	@PostMapping
 	@Transactional
+	@CacheEvict(value = "timeline", allEntries = true)
 	public ResponseEntity<PostDto> create(@RequestBody @Valid PostForm postForm, UriComponentsBuilder uriBuilder) {
 		User user = userRepository.getOne(myId);
 
@@ -77,6 +79,7 @@ public class PostController {
 
 	@DeleteMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "timeline", allEntries = true)
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		Optional<Post> post = postRepository.findById(id);
 
