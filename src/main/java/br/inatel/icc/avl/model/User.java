@@ -8,9 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.OnDelete;
@@ -40,15 +37,13 @@ public class User {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Comment> comments;
 
-	@ManyToMany
-	@JoinTable(name = "user_followers", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "follower_id") })
-	private List<User> followers = new ArrayList<>();
-
-	@ManyToMany
-	@JoinTable(name = "user_followings", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "following_id") })
-	private List<User> followings = new ArrayList<>();
+	@OneToMany(mappedBy = "following", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Follow> followings = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "follower", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Follow> followers = new ArrayList<>();
 
 	public User() {
 	}
@@ -93,34 +88,23 @@ public class User {
 	}
 
 	public List<User> getFollowers() {
-		return followers;
+		List<User> users = new ArrayList<>();
+		followers.forEach(follow -> {
+			users.add(follow.getFollowing());
+		});
+		return users;
 	}
 
 	public List<User> getFollowings() {
-		return followings;
+		List<User> users = new ArrayList<>();
+		followings.forEach(follow -> {
+			users.add(follow.getFollower());
+		});
+		return users;
 	}
 
-	public void addFollower(User user) {
-		if (!followers.contains(user)) {
-			followers.add(user);
-		}
-	}
-
-	public void addFollowing(User user) {
-		if (!followings.contains(user)) {
-			followings.add(user);
-		}
-	}
-
-	public void removeFollower(User user) {
-		if (followers.contains(user)) {
-			followers.remove(user);
-		}
-	}
-
-	public void removeFollowing(User user) {
-		if (followings.contains(user)) {
-			followings.remove(user);
-		}
+	public boolean isFollowedBy(User user) {
+		List<User> users = getFollowers();
+		return users.contains(user);
 	}
 }
