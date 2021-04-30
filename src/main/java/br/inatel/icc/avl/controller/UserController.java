@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -203,6 +204,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/timeline")
+	@Cacheable(value = "timeline")
 	public ResponseEntity<List<PostDto>> timeline(@PageableDefault(sort = "id", direction = Direction.DESC, page = 0, size = 10) Pageable pageable){
 		long myId = 1;
 		List<Post> posts = postRepository.findUserTimeline(myId);
