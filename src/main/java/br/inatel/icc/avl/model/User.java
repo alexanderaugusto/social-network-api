@@ -104,7 +104,7 @@ public class User {
 	}
 
 	public boolean isFollowedBy(User user) {
-		List<User> users = getFollowers();
+		List<User> users = getFollowers();	
 		return users.contains(user);
 	}
 }
