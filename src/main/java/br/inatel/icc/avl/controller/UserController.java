@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -112,18 +113,19 @@ public class UserController {
 
 	@PutMapping("/follow/{id}")
 	@Transactional
-	public ResponseEntity<?> followUser(@PathVariable("id") Long id) {
-		long myId = 1;
-		User loggedUser = userRepository.getOne(myId);
+	public ResponseEntity<?> followUser(Authentication authentication, @PathVariable("id") Long id) {
+		User authenticatedUser = (User) authentication.getPrincipal();
+		
 		Optional<User> userToFollow = userRepository.findById(id);
 		
 		if(userToFollow.isPresent()) {
-			if(userToFollow.get().isFollowedBy(loggedUser)) {
+			if(userToFollow.get().isFollowedBy(authenticatedUser)) {
 				return ResponseEntity.status(403).build();
 			}
 			
-			Follow follow = new Follow(loggedUser, userToFollow.get());
+			Follow follow = new Follow(authenticatedUser, userToFollow.get());
 			followRepository.save(follow);
+			
 			return ResponseEntity.status(204).build();
 		}
 		
@@ -132,9 +134,8 @@ public class UserController {
 	
 	@DeleteMapping("/follow/{id}")
 	@Transactional
-	public ResponseEntity<?> unfollowUser(@PathVariable("id") Long id){
-		long myId = 1;
-		User loggedUser = userRepository.getOne(myId);
+	public ResponseEntity<?> unfollowUser(Authentication authentication, @PathVariable("id") Long id){
+		User authenticatedUser = (User) authentication.getPrincipal();
 		Optional<User> userToUnfollow = userRepository.findById(id);
 		
 		if(userToUnfollow.isPresent()) {
@@ -142,7 +143,7 @@ public class UserController {
 //				return ResponseEntity.status(403).build();
 //			}
 			
-			Follow follow = followRepository.findByFollowerAndFollowing(userToUnfollow, loggedUser);
+			Follow follow = followRepository.findByFollowerAndFollowing(userToUnfollow, authenticatedUser);
 			try {
 				followRepository.deleteById(follow.getId());
 				return ResponseEntity.status(204).build();
@@ -205,10 +206,12 @@ public class UserController {
 	
 	@GetMapping("/timeline")
 	@Cacheable(value = "timeline")
-	public ResponseEntity<List<PostDto>> timeline(@PageableDefault(sort = "id", direction = Direction.DESC, page = 0, size = 10) Pageable pageable){
-		long myId = 1;
-		List<Post> posts = postRepository.findUserTimeline(myId);
+	public ResponseEntity<List<PostDto>> timeline(Authentication authentication, @PageableDefault(sort = "id", direction = Direction.DESC, page = 0, size = 10) Pageable pageable){
+		User authenticatedUser = (User) authentication.getPrincipal();
+		
+		List<Post> posts = postRepository.findUserTimeline(authenticatedUser.getId());
 		List<PostDto> postsDto = PostDto.toDtoList(posts);
+		
 		return ResponseEntity.status(200).body(postsDto);
 	}
 }

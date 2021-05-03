@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +43,6 @@ public class PostController {
 	private UserRepository userRepository;
 	private ReactionRepository reactionRepository;
 	private CommentRepository commentRepository;
-	private final long myId = 1;
 
 	@Autowired
 	public PostController(PostRepository postRepository, UserRepository userRepository,
@@ -56,9 +56,10 @@ public class PostController {
 	@PostMapping
 	@Transactional
 	@CacheEvict(value = "timeline", allEntries = true)
-	public ResponseEntity<PostDto> create(@RequestBody @Valid PostForm postForm, UriComponentsBuilder uriBuilder) {
-		User user = userRepository.getOne(myId);
-
+	public ResponseEntity<PostDto> create(Authentication authentication, @RequestBody @Valid PostForm postForm, UriComponentsBuilder uriBuilder) {
+		User authenticatedUser = (User) authentication.getPrincipal();
+		User user = userRepository.getOne(authenticatedUser.getId());
+		
 		Post post = postForm.toPost(user);
 		postRepository.save(post);
 
@@ -95,12 +96,12 @@ public class PostController {
 
 	@PutMapping("/{id}/reactions")
 	@Transactional
-	public ResponseEntity<?> addReaction(@PathVariable("id") Long id) {
-		User user = userRepository.getOne(myId);
+	public ResponseEntity<?> addReaction(Authentication authentication, @PathVariable("id") Long id) {
+		User authenticatedUser = (User) authentication.getPrincipal();
 		Optional<Post> post = postRepository.findById(id);
 
 		if (post.isPresent()) {
-			Reaction reaction = new Reaction(user, post.get());
+			Reaction reaction = new Reaction(authenticatedUser, post.get());
 			reactionRepository.save(reaction);
 			return ResponseEntity.status(204).build();
 		}
@@ -110,12 +111,12 @@ public class PostController {
 
 	@DeleteMapping("/{id}/reactions")
 	@Transactional
-	public ResponseEntity<?> removeReaction(@PathVariable("id") Long id) {
-		User user = userRepository.getOne(myId);
+	public ResponseEntity<?> removeReaction(Authentication authentication, @PathVariable("id") Long id) {
+		User authenticatedUser = (User) authentication.getPrincipal();
 		Optional<Post> post = postRepository.findById(id);
 
 		if (post.isPresent()) {
-			Reaction reaction = reactionRepository.findByUserAndPost(user, post.get());
+			Reaction reaction = reactionRepository.findByUserAndPost(authenticatedUser, post.get());
 			reactionRepository.deleteById(reaction.getId());
 			return ResponseEntity.status(204).build();
 		}
@@ -139,12 +140,12 @@ public class PostController {
 	
 	@PutMapping("/{id}/comments")
 	@Transactional
-	public ResponseEntity<?> addComment(@RequestBody @Valid CommentForm form, @PathVariable("id") Long id){
-		User user = userRepository.getOne(myId);
+	public ResponseEntity<?> addComment(Authentication authentication, @RequestBody @Valid CommentForm form, @PathVariable("id") Long id){
+		User authenticatedUser = (User) authentication.getPrincipal();
 		Optional<Post> post = postRepository.findById(id);
 		
 		if(post.isPresent()) {
-			Comment comment = form.toComment(user, post.get());
+			Comment comment = form.toComment(authenticatedUser, post.get());
 			commentRepository.save(comment);
 			return ResponseEntity.status(204).build();
 		}
