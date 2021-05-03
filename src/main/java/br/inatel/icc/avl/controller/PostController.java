@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.inatel.icc.avl.controller.dto.CommentDto;
-import br.inatel.icc.avl.controller.dto.PostDetailDto;
 import br.inatel.icc.avl.controller.dto.PostDto;
 import br.inatel.icc.avl.controller.dto.ReactionDto;
 import br.inatel.icc.avl.controller.form.CommentForm;
@@ -69,11 +68,11 @@ public class PostController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<PostDetailDto> list(@PathVariable("id") Long id) {
+	public ResponseEntity<PostDto> list(@PathVariable("id") Long id) {
 		Optional<Post> post = postRepository.findById(id);
 
 		if (post.isPresent()) {
-			PostDetailDto postDto = new PostDetailDto(post.get());
+			PostDto postDto = new PostDto(post.get());
 			return ResponseEntity.status(200).body(postDto);
 		}
 
