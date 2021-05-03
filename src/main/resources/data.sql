@@ -1,9 +1,9 @@
 INSERT INTO USER (name, email, password, phone)
 VALUES 
-('Alexander Augusto', 'alexaasf1010@gmail.com', '123', '35984529203'),
-('Alysson Henrique', 'alyssonhenrique1@hotmail.com', '123', '35999999999'),
-('Ariany Cristina', 'arianycristina1010@gmail.com', '123', '35999999991'),
-('Ana Laura', 'analaura@gmail.com', '123', '35999999992');
+('Alexander Augusto', 'alexaasf1010@gmail.com', '$2a$10$LTdtg0/bnYaecoZqTMjXZO1w7CyzXsd1miN59Tvl6wUCXy1VleBPa', '35984529203'),
+('Alysson Henrique', 'alyssonhenrique1@hotmail.com', '$2a$10$LTdtg0/bnYaecoZqTMjXZO1w7CyzXsd1miN59Tvl6wUCXy1VleBPa', '35999999999'),
+('Ariany Cristina', 'arianycristina1010@gmail.com', '$2a$10$LTdtg0/bnYaecoZqTMjXZO1w7CyzXsd1miN59Tvl6wUCXy1VleBPa', '35999999991'),
+('Ana Laura', 'analaura@gmail.com', '$2a$10$LTdtg0/bnYaecoZqTMjXZO1w7CyzXsd1miN59Tvl6wUCXy1VleBPa', '35999999992');
 
 INSERT INTO POST (description, media, owner_id)
 VALUES 
