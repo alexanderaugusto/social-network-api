@@ -101,8 +101,14 @@ public class PostController {
 		Optional<Post> post = postRepository.findById(id);
 
 		if (post.isPresent()) {
-			Reaction reaction = new Reaction(authenticatedUser, post.get());
-			reactionRepository.save(reaction);
+			Optional<Reaction> reaction = reactionRepository.findByUserAndPost(authenticatedUser, post.get());
+			
+			if(reaction.isPresent()) {
+				return ResponseEntity.status(403).build();
+			}
+			
+			Reaction newReaction = new Reaction(authenticatedUser, post.get());
+			reactionRepository.save(newReaction);
 			return ResponseEntity.status(204).build();
 		}
 
@@ -114,10 +120,10 @@ public class PostController {
 	public ResponseEntity<?> removeReaction(Authentication authentication, @PathVariable("id") Long id) {
 		User authenticatedUser = (User) authentication.getPrincipal();
 		Optional<Post> post = postRepository.findById(id);
-
-		if (post.isPresent()) {
-			Reaction reaction = reactionRepository.findByUserAndPost(authenticatedUser, post.get());
-			reactionRepository.deleteById(reaction.getId());
+		Optional<Reaction> reaction = reactionRepository.findByUserAndPost(authenticatedUser, post.get());
+		
+		if (post.isPresent() && reaction.isPresent()) {
+			reactionRepository.deleteById(reaction.get().getId());
 			return ResponseEntity.status(204).build();
 		}
 
@@ -138,16 +144,18 @@ public class PostController {
 		return ResponseEntity.status(404).build();
 	}
 	
-	@PutMapping("/{id}/comments")
+	@PostMapping("/{id}/comments")
 	@Transactional
 	public ResponseEntity<?> addComment(Authentication authentication, @RequestBody @Valid CommentForm form, @PathVariable("id") Long id){
 		User authenticatedUser = (User) authentication.getPrincipal();
+		User user = userRepository.getOne(authenticatedUser.getId());
+		
 		Optional<Post> post = postRepository.findById(id);
 		
 		if(post.isPresent()) {
-			Comment comment = form.toComment(authenticatedUser, post.get());
+			Comment comment = form.toComment(user, post.get());
 			commentRepository.save(comment);
-			return ResponseEntity.status(204).build();
+			return ResponseEntity.status(200).body(new CommentDto(comment));
 		}
 		
 		return ResponseEntity.status(404).build();
