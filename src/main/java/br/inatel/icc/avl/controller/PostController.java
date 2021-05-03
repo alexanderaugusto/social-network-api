@@ -155,7 +155,7 @@ public class PostController {
 		if(post.isPresent()) {
 			Comment comment = form.toComment(user, post.get());
 			commentRepository.save(comment);
-			return ResponseEntity.status(200).body(new CommentDto(comment));
+			return ResponseEntity.status(201).body(new CommentDto(comment));
 		}
 		
 		return ResponseEntity.status(404).build();
