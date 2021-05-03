@@ -1,9 +1,8 @@
 package br.inatel.icc.avl.controller.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.springframework.data.domain.Page;
 
 import br.inatel.icc.avl.model.Post;
 
@@ -14,6 +13,8 @@ public class PostDto {
 	private String media;
 	private int totalReactions;
 	private int totalComments;
+	private UserDto owner;
+	private List<Long> reactions;
 	
 	public PostDto(Post post) {
 		this.id = post.getId();
@@ -21,8 +22,12 @@ public class PostDto {
 		this.media = post.getMedia();
 		this.totalReactions = post.getReactions().size();
 		this.totalComments = post.getComments().size();
+		this.owner = new UserDto(post.getOwner());
+		
+		this.reactions = new ArrayList<>();
+		this.reactions = post.getReactions().stream().map(e -> e.getUser().getId()).collect(Collectors.toList());
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -34,7 +39,11 @@ public class PostDto {
 	public String getMedia() {
 		return media;
 	}
-	
+
+	public UserDto getOwner() {
+		return owner;
+	}
+
 	public int getTotalReactions() {
 		return totalReactions;
 	}
@@ -43,14 +52,12 @@ public class PostDto {
 		return totalComments;
 	}
 
+	public List<Long> getReactions() {
+		return reactions;
+	}
+
 	public static List<PostDto> toDtoList(List<Post> posts) {
 		List<PostDto> postsDto = posts.stream().map(PostDto::new).collect(Collectors.toList());
 		return postsDto;
 	}
-
-	public static Page<PostDto> toDtoPage(Page<Post> posts) {
-		Page<PostDto> postsDto = posts.map(PostDto::new);
-		return postsDto;
-	}
-
 }
