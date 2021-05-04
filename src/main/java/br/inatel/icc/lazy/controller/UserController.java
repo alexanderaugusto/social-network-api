@@ -63,6 +63,19 @@ public class UserController {
 		return ResponseEntity.status(201).location(uri).body(new UserDto(user));
 	}
 
+	@GetMapping
+	public ResponseEntity<UserDto> list(Authentication authentication) {
+		User authenticatedUser = (User) authentication.getPrincipal();
+		Optional<User> user = userRepository.findById(authenticatedUser.getId());
+
+		if (user.isPresent()) {
+			UserDto userDto = new UserDto(user.get());
+			return ResponseEntity.status(200).body(userDto);
+		}
+
+		return ResponseEntity.status(404).build();
+	}
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<UserDto> list(@PathVariable("id") Long id) {
 		Optional<User> user = userRepository.findById(id);
