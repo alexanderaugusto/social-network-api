@@ -20,7 +20,7 @@ import br.inatel.icc.lazy.controller.form.LoginForm;
 
 @RestController
 @RequestMapping("/auth")
-@Profile("prod")
+@Profile(value = {"prod", "test"})
 public class AuthController {
 	
 	private AuthenticationManager authManager;
