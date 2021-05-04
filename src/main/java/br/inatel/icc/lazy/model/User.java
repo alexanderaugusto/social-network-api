@@ -31,6 +31,7 @@ public class User implements UserDetails{
 	private String email;
 	private String password;
 	private String phone;
+	private String avatar;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Profile> profiles = new ArrayList<>();
@@ -58,11 +59,12 @@ public class User implements UserDetails{
 	public User() {
 	}
 
-	public User(String name, String email, String password, String phone) {
+	public User(String name, String email, String password, String phone, String avatar) {
 		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.phone = phone;
+		this.avatar = avatar;
 	}
 
 	public Long getId() {
@@ -87,6 +89,10 @@ public class User implements UserDetails{
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public String getAvatar() {
+		return avatar;
 	}
 
 	public List<Post> getPosts() {

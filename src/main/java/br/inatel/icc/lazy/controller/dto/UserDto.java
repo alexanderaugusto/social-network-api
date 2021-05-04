@@ -13,6 +13,7 @@ public class UserDto {
 	private String name;
 	private String email;
 	private String phone;
+	private String avatar;
 	private int totalFollowers;
 	private int totalFollowings;
 	
@@ -21,6 +22,7 @@ public class UserDto {
 		this.name = user.getName();
 		this.email = user.getEmail();
 		this.phone = user.getPhone();
+		this.avatar = user.getAvatar();
 		this.totalFollowers = user.getFollowers().size();
 		this.totalFollowings = user.getFollowings().size();
 	}
@@ -41,6 +43,10 @@ public class UserDto {
 		return phone;
 	}
 	
+	public String getAvatar() {
+		return avatar;
+	}
+
 	public int getTotalFollowers() {
 		return totalFollowers;
 	}
