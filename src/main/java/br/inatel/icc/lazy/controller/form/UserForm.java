@@ -4,6 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.sun.istack.NotNull;
 
@@ -36,6 +37,7 @@ public class UserForm {
 	}
 	
 	public User toUser() {
-		return new User(name, email, password, phone);
+		String encryptedPassword = new BCryptPasswordEncoder().encode(password);
+		return new User(name, email, encryptedPassword, phone, "https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/batman_hero_avatar_comics-512.png");
 	}
 }
