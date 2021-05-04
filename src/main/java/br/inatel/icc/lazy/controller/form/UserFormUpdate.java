@@ -10,7 +10,7 @@ import br.inatel.icc.lazy.model.User;
 
 public class UserFormUpdate {
 
-	@NotNull @NotEmpty @Length(min = 5)
+	@NotNull @NotEmpty
 	private String name;
 	@NotEmpty @Length(min = 9)
 	private String phone;

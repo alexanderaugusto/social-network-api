@@ -10,7 +10,7 @@ import com.sun.istack.NotNull;
 import br.inatel.icc.lazy.model.User;
 
 public class UserForm {
-	@NotNull @NotEmpty @Length(min = 5)
+	@NotNull @NotEmpty
 	private String name;
 	@NotNull @NotEmpty @Email
 	private String email;

@@ -3,15 +3,13 @@ package br.inatel.icc.lazy.controller.form;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.Length;
-
 import br.inatel.icc.lazy.model.Comment;
 import br.inatel.icc.lazy.model.Post;
 import br.inatel.icc.lazy.model.User;
 
 public class CommentForm {
 
-	@NotNull @NotEmpty @Length(min = 5, max = 250)
+	@NotNull @NotEmpty
 	private String description;
 
 	public String getDescription() {
