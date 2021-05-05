@@ -1,4 +1,4 @@
-INSERT INTO USER (name, email, password, phone, avatar)
+INSERT INTO USERS (name, email, password, phone, avatar)
 VALUES 
 ('Alexander Augusto', 'alexaasf1010@gmail.com', '$2a$10$LTdtg0/bnYaecoZqTMjXZO1w7CyzXsd1miN59Tvl6wUCXy1VleBPa', '35984529203', 'https://www.pngkey.com/png/detail/193-1938385_-pikachu-avatar.png'),
 ('Alysson Henrique', 'alyssonhenrique1@hotmail.com', '$2a$10$LTdtg0/bnYaecoZqTMjXZO1w7CyzXsd1miN59Tvl6wUCXy1VleBPa', '35999999999', 'https://i.pinimg.com/originals/a9/74/7d/a9747dc7e0ec8982556a3d50d28762e7.jpg'),
