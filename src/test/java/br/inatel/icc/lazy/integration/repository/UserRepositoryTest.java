@@ -1,4 +1,4 @@
-package br.inatel.icc.lazy.integration.reporitory;
+package br.inatel.icc.lazy.integration.repository;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import br.inatel.icc.lazy.repository.UserRepository;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase
 @ActiveProfiles("test")
 class UserRepositoryTest {
 
