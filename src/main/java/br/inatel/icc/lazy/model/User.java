@@ -109,6 +109,10 @@ public class User implements UserDetails{
 		return users;
 	}
 
+	public void setFollowers(List<Follow> followers) {
+		this.followers = followers;
+	}
+
 	public List<User> getFollowings() {
 		List<User> users = new ArrayList<>();
 		followings.forEach(follow -> {
@@ -116,9 +120,13 @@ public class User implements UserDetails{
 		});
 		return users;
 	}
-
+	
+	public void setFollowings(List<Follow> followings) {
+		this.followings = followings;
+	}
+	
 	public boolean isFollowedBy(User user) {
-		List<User> users = getFollowers();	
+		List<User> users = getFollowers();
 		return users.contains(user);
 	}
 
