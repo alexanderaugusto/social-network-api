@@ -38,13 +38,13 @@ class AuthControllerTest {
 	
 	@Test
 	public void shouldNotDoALogin() throws Exception {
-		String data = "{\"email\":\"alexaasf1010@gmail.com\", \"password\":\"123\"}";
+		String data = "{\"email\":\"email@gmail.com\", \"password\":\"123\"}";
 		
 		mockMvc.perform(MockMvcRequestBuilders
 				.post("/auth/login")
 				.content(data)
 				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(MockMvcResultMatchers.status().is(200));
+		.andExpect(MockMvcResultMatchers.status().is(400));
 	}
 
 }
