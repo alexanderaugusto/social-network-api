@@ -31,7 +31,7 @@ public class CloudinaryService {
 	public Map upload(MultipartFile multipartFile, String folder) throws IOException {
 		File file = convert(multipartFile);
 		Map params = ObjectUtils.asMap(
-		    "folder", "lazy/post",
+		    "folder", "lazy/" + folder,
 		    "unique_filename", true,
 		    "overwrite", true,
 		    "resource_type", "image"         
