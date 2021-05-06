@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,7 +72,8 @@ public class UserController {
 			avatar = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
 		}
 		
-		User user = new User(name, email, password, phone, avatar);
+		String encryptedPassword = new BCryptPasswordEncoder().encode(password);
+		User user = new User(name, email, encryptedPassword, phone, avatar);
 		userRepository.save(user);
 
 		URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
