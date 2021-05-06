@@ -65,9 +65,9 @@ public class UserController {
 			@RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("file") MultipartFile file,
 			UriComponentsBuilder uriBuilder) throws IOException {
 		Map uploadResult = cloudinaryService.upload(file, "user");
-		String media = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
+		String avatar = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
 		
-		User user = new User(name, email, password, phone, media);
+		User user = new User(name, email, password, phone, avatar);
 		userRepository.save(user);
 
 		URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
@@ -206,6 +206,22 @@ public class UserController {
 		return ResponseEntity.status(404).build();
 	}
 
+	@SuppressWarnings("rawtypes")
+	@PutMapping("/{id}/avatar")
+	@Transactional
+	public ResponseEntity<UserDto> updateAvatar(@RequestParam("file") MultipartFile file, @PathVariable("id") Long id) throws IOException {
+		Optional<User> user = userRepository.findById(id);
+
+		if (user.isPresent()) {
+			Map uploadResult = cloudinaryService.upload(file, "user");
+			String avatar = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
+			user.get().setAvatar(avatar);
+			return ResponseEntity.status(200).body(new UserDto(user.get()));
+		}
+
+		return ResponseEntity.status(404).build();
+	}
+	
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
