@@ -96,6 +96,10 @@ public class User implements UserDetails{
 	public String getAvatar() {
 		return avatar;
 	}
+	
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
 
 	public List<Post> getPosts() {
 		return posts;
