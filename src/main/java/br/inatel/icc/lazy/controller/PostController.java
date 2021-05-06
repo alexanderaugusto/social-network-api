@@ -71,7 +71,7 @@ public class PostController {
 		User authenticatedUser = (User) authentication.getPrincipal();
 		User user = userRepository.getOne(authenticatedUser.getId());
 
-		String media = "default-post.jpg";
+		String media = cloudinaryService.getCloudinaryDefault() + "/post/" + "default-post.jpg";
 
 		if (file != null) {
 			Map uploadResult = cloudinaryService.upload(file, "post");

@@ -64,7 +64,7 @@ public class UserController {
 	public ResponseEntity<UserDto> create(@RequestParam("name") String name, @RequestParam("email") String email,
 			@RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam(value = "file", required = false) MultipartFile file,
 			UriComponentsBuilder uriBuilder) throws IOException {
-		String avatar = "lazy/user/default-avatar.png";
+		String avatar = cloudinaryService.getCloudinaryDefault() + "/user/" + "default-avatar.jpg";;
 		
 		if(file != null) {
 			Map uploadResult = cloudinaryService.upload(file, "user");

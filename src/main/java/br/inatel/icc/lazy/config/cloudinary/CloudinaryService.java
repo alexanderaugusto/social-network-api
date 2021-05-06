@@ -31,6 +31,16 @@ public class CloudinaryService {
 		cloudinary = new Cloudinary(valuesMap);
 	}
 
+	public String getCloudinaryDefault() {
+		return cloudinaryDefault;
+	}
+
+	public void setCloudinaryDefault(String cloudinaryDefault) {
+		this.cloudinaryDefault = cloudinaryDefault;
+	}
+
+
+
 	@SuppressWarnings("rawtypes")
 	public Map upload(MultipartFile multipartFile, String folder) throws IOException {
 		File file = convert(multipartFile);
