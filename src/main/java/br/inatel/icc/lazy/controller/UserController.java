@@ -62,10 +62,14 @@ public class UserController {
 	@PostMapping
 	@Transactional
 	public ResponseEntity<UserDto> create(@RequestParam("name") String name, @RequestParam("email") String email,
-			@RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("file") MultipartFile file,
+			@RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam(value = "file", required = false) MultipartFile file,
 			UriComponentsBuilder uriBuilder) throws IOException {
-		Map uploadResult = cloudinaryService.upload(file, "user");
-		String avatar = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
+		String avatar = "lazy/user/default-avatar.png";
+		
+		if(file != null) {
+			Map uploadResult = cloudinaryService.upload(file, "user");
+			avatar = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
+		}
 		
 		User user = new User(name, email, password, phone, avatar);
 		userRepository.save(user);

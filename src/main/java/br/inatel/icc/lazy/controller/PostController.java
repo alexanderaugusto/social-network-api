@@ -48,10 +48,11 @@ public class PostController {
 	private ReactionRepository reactionRepository;
 	private CommentRepository commentRepository;
 	private CloudinaryService cloudinaryService;
-	
+
 	@Autowired
 	public PostController(PostRepository postRepository, UserRepository userRepository,
-			ReactionRepository reactionRepository, CommentRepository commentRepository, CloudinaryService cloudinaryService) {
+			ReactionRepository reactionRepository, CommentRepository commentRepository,
+			CloudinaryService cloudinaryService) {
 		this.postRepository = postRepository;
 		this.userRepository = userRepository;
 		this.reactionRepository = reactionRepository;
@@ -64,16 +65,22 @@ public class PostController {
 	@Transactional
 	@CacheEvict(value = "timeline", allEntries = true)
 	public ResponseEntity<PostDto> create(Authentication authentication,
-			@RequestParam("description") String description, @RequestParam("file") MultipartFile file, UriComponentsBuilder uriBuilder) throws IOException {
+			@RequestParam("description") String description,
+			@RequestParam(value = "file", required = false) MultipartFile file, UriComponentsBuilder uriBuilder)
+			throws IOException {
 		User authenticatedUser = (User) authentication.getPrincipal();
 		User user = userRepository.getOne(authenticatedUser.getId());
 
-		Map uploadResult = cloudinaryService.upload(file, "post");
-		String media = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
+		String media = "default-post.jpg";
+
+		if (file != null) {
+			Map uploadResult = cloudinaryService.upload(file, "post");
+			media = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
+		}
 
 		Post post = new Post(description, media, user);
 		postRepository.save(post);
-		
+
 		URI uri = uriBuilder.path("/posts/{id}").buildAndExpand(post.getId()).toUri();
 
 		return ResponseEntity.status(201).location(uri).body(new PostDto(post));
