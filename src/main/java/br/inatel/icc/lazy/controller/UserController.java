@@ -1,7 +1,9 @@
 package br.inatel.icc.lazy.controller;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -24,11 +26,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.inatel.icc.lazy.config.cloudinary.CloudinaryService;
 import br.inatel.icc.lazy.controller.dto.PostDto;
 import br.inatel.icc.lazy.controller.dto.UserDto;
-import br.inatel.icc.lazy.controller.form.UserForm;
 import br.inatel.icc.lazy.controller.form.UserFormUpdate;
 import br.inatel.icc.lazy.model.Follow;
 import br.inatel.icc.lazy.model.Post;
@@ -44,18 +47,27 @@ public class UserController {
 	private UserRepository userRepository;
 	private FollowRepository followRepository;
 	private PostRepository postRepository;
+	private CloudinaryService cloudinaryService;
 	
 	@Autowired
-	public UserController(UserRepository userRepository, FollowRepository followRepository, PostRepository postRepository) {
+	public UserController(UserRepository userRepository, FollowRepository followRepository,
+			PostRepository postRepository, CloudinaryService cloudinaryService) {
 		this.userRepository = userRepository;
 		this.followRepository = followRepository;
 		this.postRepository = postRepository;
+		this.cloudinaryService = cloudinaryService;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@PostMapping
 	@Transactional
-	public ResponseEntity<UserDto> create(@RequestBody @Valid UserForm form, UriComponentsBuilder uriBuilder) {
-		User user = form.toUser();
+	public ResponseEntity<UserDto> create(@RequestParam("name") String name, @RequestParam("email") String email,
+			@RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("file") MultipartFile file,
+			UriComponentsBuilder uriBuilder) throws IOException {
+		Map uploadResult = cloudinaryService.upload(file, "user");
+		String media = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
+		
+		User user = new User(name, email, password, phone, media);
 		userRepository.save(user);
 
 		URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
@@ -75,7 +87,7 @@ public class UserController {
 
 		return ResponseEntity.status(404).build();
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<UserDto> list(@PathVariable("id") Long id) {
 		Optional<User> user = userRepository.findById(id);
@@ -128,34 +140,34 @@ public class UserController {
 	@Transactional
 	public ResponseEntity<?> followUser(Authentication authentication, @PathVariable("id") Long id) {
 		User authenticatedUser = (User) authentication.getPrincipal();
-		
+
 		Optional<User> userToFollow = userRepository.findById(id);
-		
-		if(userToFollow.isPresent()) {
-			if(userToFollow.get().isFollowedBy(authenticatedUser)) {
+
+		if (userToFollow.isPresent()) {
+			if (userToFollow.get().isFollowedBy(authenticatedUser)) {
 				return ResponseEntity.status(403).build();
 			}
-			
+
 			Follow follow = new Follow(authenticatedUser, userToFollow.get());
 			followRepository.save(follow);
-			
+
 			return ResponseEntity.status(204).build();
 		}
-		
+
 		return ResponseEntity.status(404).build();
 	}
-	
+
 	@DeleteMapping("/follow/{id}")
 	@Transactional
-	public ResponseEntity<?> unfollowUser(Authentication authentication, @PathVariable("id") Long id){
+	public ResponseEntity<?> unfollowUser(Authentication authentication, @PathVariable("id") Long id) {
 		User authenticatedUser = (User) authentication.getPrincipal();
 		Optional<User> userToUnfollow = userRepository.findById(id);
-		
-		if(userToUnfollow.isPresent()) {
+
+		if (userToUnfollow.isPresent()) {
 //			if(!userToUnfollow.get().isFollowedBy(loggedUser)) {
 //				return ResponseEntity.status(403).build();
 //			}
-			
+
 			Follow follow = followRepository.findByFollowerAndFollowing(userToUnfollow, authenticatedUser);
 			try {
 				followRepository.deleteById(follow.getId());
@@ -164,67 +176,68 @@ public class UserController {
 				return ResponseEntity.status(403).build();
 			}
 		}
-		
+
 		return ResponseEntity.status(404).build();
 	}
-	
+
 	@GetMapping("{id}/follow/{targetId}")
 	@Transactional
 	public ResponseEntity<?> followUser(@PathVariable("id") Long id, @PathVariable("targetId") Long targetId) {
 		Optional<User> user = userRepository.findById(id);
 		Optional<User> targetUser = userRepository.findById(targetId);
-		
-		if(user.isPresent() && targetUser.isPresent() && targetUser.get().isFollowedBy(user.get())) {
-			return ResponseEntity.status(204).build();	
+
+		if (user.isPresent() && targetUser.isPresent() && targetUser.get().isFollowedBy(user.get())) {
+			return ResponseEntity.status(204).build();
 		}
-		
+
 		return ResponseEntity.status(404).build();
 	}
-	
+
 	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity<UserDto> update(@RequestBody @Valid UserFormUpdate form, @PathVariable("id") Long id){
+	public ResponseEntity<UserDto> update(@RequestBody @Valid UserFormUpdate form, @PathVariable("id") Long id) {
 		Optional<User> user = userRepository.findById(id);
-		
-		if(user.isPresent()) {
+
+		if (user.isPresent()) {
 			User newUser = form.update(user.get());
 			return ResponseEntity.status(200).body(new UserDto(newUser));
 		}
-		
+
 		return ResponseEntity.status(404).build();
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> delete(@PathVariable("id") Long id){
+	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		Optional<User> user = userRepository.findById(id);
-		
-		if(user.isPresent()) {
+
+		if (user.isPresent()) {
 			user.get().getFollowers().clear();
 			user.get().getFollowings().clear();
 			userRepository.deleteById(id);
 			return ResponseEntity.status(204).build();
 		}
-		
+
 		return ResponseEntity.status(404).build();
 	}
-	
+
 	@GetMapping("/search")
 	public ResponseEntity<Page<UserDto>> search(@RequestParam(required = true, name = "name") String userName,
-			@PageableDefault(sort="name", direction = Direction.ASC, page = 0, size = 10) Pageable pageable){
+			@PageableDefault(sort = "name", direction = Direction.ASC, page = 0, size = 10) Pageable pageable) {
 		Page<User> users = userRepository.findByNameContainingIgnoreCase(userName, pageable);
 		Page<UserDto> usersDto = UserDto.toDtoPage(users);
 		return ResponseEntity.status(200).body(usersDto);
 	}
-	
+
 	@GetMapping("/timeline")
 	@Cacheable(value = "timeline")
-	public ResponseEntity<List<PostDto>> timeline(Authentication authentication, @PageableDefault(sort = "id", direction = Direction.DESC, page = 0, size = 10) Pageable pageable){
+	public ResponseEntity<List<PostDto>> timeline(Authentication authentication,
+			@PageableDefault(sort = "id", direction = Direction.DESC, page = 0, size = 10) Pageable pageable) {
 		User authenticatedUser = (User) authentication.getPrincipal();
-		
+
 		List<Post> posts = postRepository.findUserTimeline(authenticatedUser.getId());
 		List<PostDto> postsDto = PostDto.toDtoList(posts);
-		
+
 		return ResponseEntity.status(200).body(postsDto);
 	}
 }
