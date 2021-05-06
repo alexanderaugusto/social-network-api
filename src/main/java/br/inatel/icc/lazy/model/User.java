@@ -40,15 +40,15 @@ public class User implements UserDetails{
 
 	@OneToMany(mappedBy = "owner", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<Post> posts;
+	private List<Post> posts = new ArrayList<>();;
 
 	@OneToMany(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<Reaction> reactions;
+	private List<Reaction> reactions = new ArrayList<>();;
 
 	@OneToMany(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<Comment> comments;
+	private List<Comment> comments = new ArrayList<>();;
 
 	@OneToMany(mappedBy = "following", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@OnDelete(action = OnDeleteAction.CASCADE)
