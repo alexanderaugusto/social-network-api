@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +17,10 @@ import com.cloudinary.utils.ObjectUtils;
 public class CloudinaryService {
 
 	private Cloudinary cloudinary;
-
+	
+	@Value("${lazy.cloudinary.default}")
+	private String cloudinaryDefault;
+	
 	public CloudinaryService() {
 		Map<String, String> valuesMap = new HashMap<>();
 		
@@ -31,7 +35,7 @@ public class CloudinaryService {
 	public Map upload(MultipartFile multipartFile, String folder) throws IOException {
 		File file = convert(multipartFile);
 		Map params = ObjectUtils.asMap(
-		    "folder", "lazy/" + folder,
+		    "folder", cloudinaryDefault + "/" + folder,
 		    "unique_filename", true,
 		    "overwrite", true,
 		    "resource_type", "image"         
