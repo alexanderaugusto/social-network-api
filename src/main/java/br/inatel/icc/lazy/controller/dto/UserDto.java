@@ -16,6 +16,7 @@ public class UserDto {
 	private String avatar;
 	private int totalFollowers;
 	private int totalFollowings;
+	private int totalPosts;
 	
 	public UserDto(User user) {
 		this.id = user.getId();
@@ -25,6 +26,7 @@ public class UserDto {
 		this.avatar = user.getAvatar();
 		this.totalFollowers = user.getFollowers().size();
 		this.totalFollowings = user.getFollowings().size();
+		this.totalPosts = user.getPosts().size();
 	}
 
 	public Long getId() {
@@ -53,6 +55,10 @@ public class UserDto {
 
 	public int getTotalFollowings() {
 		return totalFollowings;
+	}
+	
+	public int getTotalPosts() {
+		return totalPosts;
 	}
 
 	public static List<UserDto> toDtoList(List<User> users){
