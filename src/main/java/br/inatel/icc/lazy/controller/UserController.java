@@ -49,7 +49,7 @@ public class UserController {
 	private FollowRepository followRepository;
 	private PostRepository postRepository;
 	private CloudinaryService cloudinaryService;
-	
+
 	@Autowired
 	public UserController(UserRepository userRepository, FollowRepository followRepository,
 			PostRepository postRepository, CloudinaryService cloudinaryService) {
@@ -63,15 +63,17 @@ public class UserController {
 	@PostMapping
 	@Transactional
 	public ResponseEntity<UserDto> create(@RequestParam("name") String name, @RequestParam("email") String email,
-			@RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam(value = "file", required = false) MultipartFile file,
-			UriComponentsBuilder uriBuilder) throws IOException {
-		String avatar = cloudinaryService.getCloudinaryDefault() + "/user/" + "default-avatar.jpg";;
-		
-		if(file != null) {
+			@RequestParam("password") String password, @RequestParam(value = "phone", required = false) String phone,
+			@RequestParam(value = "file", required = false) MultipartFile file, UriComponentsBuilder uriBuilder)
+			throws IOException {
+		String avatar = cloudinaryService.getCloudinaryDefault() + "/user/" + "default-avatar.jpg";
+		;
+
+		if (file != null) {
 			Map uploadResult = cloudinaryService.upload(file, "user");
 			avatar = uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString();
 		}
-		
+
 		String encryptedPassword = new BCryptPasswordEncoder().encode(password);
 		User user = new User(name, email, encryptedPassword, phone, avatar);
 		userRepository.save(user);
@@ -215,7 +217,8 @@ public class UserController {
 	@SuppressWarnings("rawtypes")
 	@PutMapping("/{id}/avatar")
 	@Transactional
-	public ResponseEntity<UserDto> updateAvatar(@RequestParam("file") MultipartFile file, @PathVariable("id") Long id) throws IOException {
+	public ResponseEntity<UserDto> updateAvatar(@RequestParam("file") MultipartFile file, @PathVariable("id") Long id)
+			throws IOException {
 		Optional<User> user = userRepository.findById(id);
 
 		if (user.isPresent()) {
@@ -227,7 +230,7 @@ public class UserController {
 
 		return ResponseEntity.status(404).build();
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
