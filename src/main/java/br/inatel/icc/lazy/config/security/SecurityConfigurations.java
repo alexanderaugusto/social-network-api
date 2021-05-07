@@ -1,5 +1,7 @@
 package br.inatel.icc.lazy.config.security;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import br.inatel.icc.lazy.repository.UserRepository;
 
@@ -46,7 +51,8 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	// Authorization configs
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
+		http.cors()
+		.and().authorizeRequests()
 		.antMatchers("/auth").permitAll()
 		.antMatchers("/auth/*").permitAll()
 		.antMatchers(HttpMethod.POST, "/users").permitAll()
@@ -60,5 +66,20 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
+	}
+	
+	@Bean
+	public CorsFilter corsFilter() {
+		CorsConfiguration corsConfig = new CorsConfiguration();
+		corsConfig.setAllowCredentials(true);
+		corsConfig.addAllowedHeader("*");
+		corsConfig.addAllowedMethod("*");
+		corsConfig.setMaxAge(3600L);
+		corsConfig.setAllowedOrigins(Arrays.asList("https://lazy.vercel.app", "http://localhost:3000"));
+		
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", corsConfig);
+		
+		return new CorsFilter(source);
 	}
 }
