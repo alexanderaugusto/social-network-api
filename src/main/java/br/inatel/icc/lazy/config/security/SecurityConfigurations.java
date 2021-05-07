@@ -75,7 +75,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		corsConfig.addAllowedHeader("*");
 		corsConfig.addAllowedMethod("*");
 		corsConfig.setMaxAge(3600L);
-		corsConfig.setAllowedOrigins(Arrays.asList("https://lazy.vercel.app", "http://localhost:3000"));
+		corsConfig.setAllowedOrigins(Arrays.asList("https://lazy.vercel.app", "http://localhost:3000", "http://192.168.0.147:3000"));
 		
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", corsConfig);
