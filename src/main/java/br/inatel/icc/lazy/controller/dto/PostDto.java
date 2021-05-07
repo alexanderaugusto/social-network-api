@@ -1,6 +1,7 @@
 package br.inatel.icc.lazy.controller.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,7 @@ public class PostDto {
 	}
 
 	public static List<PostDto> toDtoList(List<Post> posts) {
+		Collections.reverse(posts);
 		List<PostDto> postsDto = posts.stream().map(PostDto::new).collect(Collectors.toList());
 		return postsDto;
 	}

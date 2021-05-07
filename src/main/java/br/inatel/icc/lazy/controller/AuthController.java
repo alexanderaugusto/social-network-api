@@ -34,7 +34,6 @@ public class AuthController {
 	public ResponseEntity<TokenDto> login(@RequestBody @Valid LoginForm form){
 		UsernamePasswordAuthenticationToken loginData = form.toLoginData();
 		
-		
 		try {
 			Authentication authentication = authManager.authenticate(loginData);
 			
