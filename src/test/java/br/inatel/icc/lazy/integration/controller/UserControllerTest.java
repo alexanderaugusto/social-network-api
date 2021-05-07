@@ -26,11 +26,11 @@ class UserControllerTest {
 	
 	@Test
 	public void shouldCreateAUser() throws Exception {
-		String data = "{\"email\":\"alex@email.com\", \"name\":\"Alexander Augusto\", \"password\":\"12345678\", \"phone\":\"35984529203\"}";
-		
 		mockMvc.perform(MockMvcRequestBuilders
 				.post("/users")
-				.content(data)
+				.param("email", "alex@email.com")
+				.param("name", "Alexander Augusto")
+				.param("password", "12345678")
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(MockMvcResultMatchers.status().is(201))
 		.andExpect(MockMvcResultMatchers.content().string(containsString("id")))
