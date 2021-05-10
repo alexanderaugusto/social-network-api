@@ -5,6 +5,7 @@ import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sun.istack.NotNull;
 
@@ -17,13 +18,12 @@ public class UserForm {
 	private String email;
 	@NotNull @NotEmpty @Length(min = 8)
 	private String password;
-	@NotEmpty @Length(min = 9)
-	private String phone;
+	private MultipartFile avatar;
 	
 	public String getName() {
 		return name;
 	}
-	
+
 	public String getEmail() {
 		return email;
 	}
@@ -31,13 +31,13 @@ public class UserForm {
 	public String getPassword() {
 		return password;
 	}
-	
-	public String getPhone() {
-		return phone;
+
+	public MultipartFile getAvatar() {
+		return avatar;
 	}
-	
-	public User toUser() {
+
+	public User toUser(String avatarUrl) {
 		String encryptedPassword = new BCryptPasswordEncoder().encode(password);
-		return new User(name, email, encryptedPassword, phone, "https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/batman_hero_avatar_comics-512.png");
+		return new User(name, email, encryptedPassword, "", avatarUrl);
 	}
 }
