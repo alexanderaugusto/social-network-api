@@ -31,7 +31,7 @@ class UserControllerTest {
 				.param("email", "alex@email.com")
 				.param("name", "Alexander Augusto")
 				.param("password", "12345678")
-				.contentType(MediaType.APPLICATION_JSON))
+				.contentType(MediaType.MULTIPART_FORM_DATA))
 		.andExpect(MockMvcResultMatchers.status().is(201))
 		.andExpect(MockMvcResultMatchers.content().string(containsString("id")))
 		.andExpect(MockMvcResultMatchers.content().string(containsString("name")))
