@@ -9,5 +9,5 @@ import br.inatel.icc.lazy.model.User;
 
 public interface FollowRepository extends JpaRepository<Follow, Long>{
 
-	Follow findByFollowerAndFollowing(Optional<User> userToUnfollow, User loggedUser);
+	Optional<Follow> findByFollowingAndFollower(User following, User follower);
 }
