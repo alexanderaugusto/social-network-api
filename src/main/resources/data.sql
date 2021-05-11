@@ -24,3 +24,9 @@ VALUES
 
 INSERT INTO FOLLOW (follower_id, following_id)
 VALUES (1, 2), (2, 1), (2, 3), (3, 4);
+
+INSERT INTO NOTIFICATION (description, url, receiver_id, sender_id)
+VALUES 
+('reagiu a sua publicação', '/post/1', 1, 2),
+('comentou sua publicação', '/post/1', 1, 2),
+('acabou de começar a seguir você', '/profile/2', 1, 2);
