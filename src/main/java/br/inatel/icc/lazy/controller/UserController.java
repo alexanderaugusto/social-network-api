@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.inatel.icc.lazy.config.cloudinary.CloudinaryService;
+import br.inatel.icc.lazy.controller.dto.NotificationDto;
 import br.inatel.icc.lazy.controller.dto.PostDto;
 import br.inatel.icc.lazy.controller.dto.UserDto;
 import br.inatel.icc.lazy.controller.form.UserFormUpdate;
@@ -139,6 +140,18 @@ public class UserController {
 		if (user.isPresent()) {
 			List<UserDto> followings = UserDto.toDtoList(user.get().getFollowings());
 			return ResponseEntity.status(200).body(followings);
+		}
+
+		return ResponseEntity.status(404).build();
+	}
+	
+	@GetMapping("/{id}/notifications")
+	public ResponseEntity<List<NotificationDto>> listNotifications(@PathVariable("id") Long id) {
+		Optional<User> user = userRepository.findById(id);
+
+		if (user.isPresent()) {
+			List<NotificationDto> notifications = NotificationDto.toDtoList(user.get().getNotifications());
+			return ResponseEntity.status(200).body(notifications);
 		}
 
 		return ResponseEntity.status(404).build();
