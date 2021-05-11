@@ -263,6 +263,8 @@ public class UserController {
 		if (user.isPresent()) {
 			user.get().getFollowers().clear();
 			user.get().getFollowings().clear();
+			user.get().getNotifications().clear();
+			user.get().getSendedNotifications();
 			userRepository.deleteById(id);
 			return ResponseEntity.status(204).build();
 		}
