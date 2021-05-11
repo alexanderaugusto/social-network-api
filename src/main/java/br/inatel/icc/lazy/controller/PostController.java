@@ -31,10 +31,12 @@ import br.inatel.icc.lazy.controller.dto.PostDto;
 import br.inatel.icc.lazy.controller.dto.ReactionDto;
 import br.inatel.icc.lazy.controller.form.CommentForm;
 import br.inatel.icc.lazy.model.Comment;
+import br.inatel.icc.lazy.model.Notification;
 import br.inatel.icc.lazy.model.Post;
 import br.inatel.icc.lazy.model.Reaction;
 import br.inatel.icc.lazy.model.User;
 import br.inatel.icc.lazy.repository.CommentRepository;
+import br.inatel.icc.lazy.repository.NotificationRepository;
 import br.inatel.icc.lazy.repository.PostRepository;
 import br.inatel.icc.lazy.repository.ReactionRepository;
 import br.inatel.icc.lazy.repository.UserRepository;
@@ -47,16 +49,18 @@ public class PostController {
 	private UserRepository userRepository;
 	private ReactionRepository reactionRepository;
 	private CommentRepository commentRepository;
+	private NotificationRepository notificationRepository;
 	private CloudinaryService cloudinaryService;
 
 	@Autowired
 	public PostController(PostRepository postRepository, UserRepository userRepository,
 			ReactionRepository reactionRepository, CommentRepository commentRepository,
-			CloudinaryService cloudinaryService) {
+			NotificationRepository notificationRepository, CloudinaryService cloudinaryService) {
 		this.postRepository = postRepository;
 		this.userRepository = userRepository;
 		this.reactionRepository = reactionRepository;
 		this.commentRepository = commentRepository;
+		this.notificationRepository = notificationRepository;
 		this.cloudinaryService = cloudinaryService;
 	}
 
@@ -127,6 +131,16 @@ public class PostController {
 
 			Reaction newReaction = new Reaction(authenticatedUser, post.get());
 			reactionRepository.save(newReaction);
+
+			if (authenticatedUser.getId() != post.get().getOwner().getId()) {
+				String description = "reagiu a sua publicação";
+				String url = "/post/" + post.get().getId();
+				User receiver = post.get().getOwner();
+				User sender = authenticatedUser;
+				Notification notification = new Notification(description, url, sender, receiver);
+				notificationRepository.save(notification);
+			}
+
 			return ResponseEntity.status(204).build();
 		}
 
@@ -174,6 +188,16 @@ public class PostController {
 		if (post.isPresent()) {
 			Comment comment = form.toComment(user, post.get());
 			commentRepository.save(comment);
+
+			if (authenticatedUser.getId() != post.get().getOwner().getId()) {
+				String description = "comentou sua publicação";
+				String url = "/post/" + post.get().getId();
+				User receiver = post.get().getOwner();
+				User sender = user;
+				Notification notification = new Notification(description, url, sender, receiver);
+				notificationRepository.save(notification);
+			}
+
 			return ResponseEntity.status(201).body(new CommentDto(comment));
 		}
 

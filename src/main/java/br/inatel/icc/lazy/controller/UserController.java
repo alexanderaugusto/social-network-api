@@ -36,9 +36,11 @@ import br.inatel.icc.lazy.controller.dto.PostDto;
 import br.inatel.icc.lazy.controller.dto.UserDto;
 import br.inatel.icc.lazy.controller.form.UserFormUpdate;
 import br.inatel.icc.lazy.model.Follow;
+import br.inatel.icc.lazy.model.Notification;
 import br.inatel.icc.lazy.model.Post;
 import br.inatel.icc.lazy.model.User;
 import br.inatel.icc.lazy.repository.FollowRepository;
+import br.inatel.icc.lazy.repository.NotificationRepository;
 import br.inatel.icc.lazy.repository.PostRepository;
 import br.inatel.icc.lazy.repository.UserRepository;
 
@@ -49,14 +51,16 @@ public class UserController {
 	private UserRepository userRepository;
 	private FollowRepository followRepository;
 	private PostRepository postRepository;
+	private NotificationRepository notificationRepository;
 	private CloudinaryService cloudinaryService;
 
 	@Autowired
 	public UserController(UserRepository userRepository, FollowRepository followRepository,
-			PostRepository postRepository, CloudinaryService cloudinaryService) {
+			PostRepository postRepository, NotificationRepository notificationRepository, CloudinaryService cloudinaryService) {
 		this.userRepository = userRepository;
 		this.followRepository = followRepository;
 		this.postRepository = postRepository;
+		this.notificationRepository = notificationRepository;
 		this.cloudinaryService = cloudinaryService;
 	}
 
@@ -162,16 +166,24 @@ public class UserController {
 	public ResponseEntity<?> followUser(Authentication authentication, @PathVariable("id") Long id) {
 		User authenticatedUser = (User) authentication.getPrincipal();
 
+		User user = userRepository.getOne(authenticatedUser.getId());
 		Optional<User> userToFollow = userRepository.findById(id);
 
 		if (userToFollow.isPresent()) {
-			if (userToFollow.get().isFollowedBy(authenticatedUser)) {
+			if (userToFollow.get().isFollowedBy(user)) {
 				return ResponseEntity.status(403).build();
 			}
 
 			Follow follow = new Follow(authenticatedUser, userToFollow.get());
 			followRepository.save(follow);
-
+			
+			String description = "começou a seguir você";
+			String url = "/profile/" + follow.getFollowing().getId();
+			User receiver = follow.getFollower();
+			User sender = follow.getFollowing();
+			Notification notification = new Notification(description, url, sender, receiver);
+			notificationRepository.save(notification);
+			
 			return ResponseEntity.status(204).build();
 		}
 
