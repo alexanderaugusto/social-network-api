@@ -1,6 +1,7 @@
 package br.inatel.icc.lazy.integration.repository;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,26 +19,28 @@ import br.inatel.icc.lazy.repository.UserRepository;
 @DataJpaTest
 @AutoConfigureTestDatabase
 @ActiveProfiles("test")
-class UserRepositoryTest {
+class UserRepositoryTest extends TestBase{
 
 	@Autowired
 	private UserRepository userRepository;
 	private Pageable pageable;
 	
+	@BeforeEach
+	public void beforeEach() {
+		userRepository.saveAndFlush(this.getUserX());
+	}
+	
 	@Test
 	public void shouldFindUserByEmail() {
-		String userEmail = "alexaasf1010@gmail.com";
-		User user = userRepository.findByEmail(userEmail).get();
+		User user = userRepository.findByEmail(this.getUserX().getEmail()).get();
 		
 		Assert.assertNotNull(user);
-		Assert.assertEquals(userEmail, user.getEmail());
+		Assert.assertEquals(this.getUserX().getEmail(), user.getEmail());
 	}
 	
 	@Test
 	public void shouldFindUsersByName() {
-		String userName = "Alexander Augusto";
-		
-		Page<User> users = userRepository.findByNameContainingIgnoreCase(userName, pageable);
+		Page<User> users = userRepository.findByNameContainingIgnoreCase(this.getUserX().getName(), pageable);
 		
 		Assert.assertNotNull(users);
 		Assert.assertEquals(1, users.getContent().size());
