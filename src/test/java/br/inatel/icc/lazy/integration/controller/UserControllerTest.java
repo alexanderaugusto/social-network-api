@@ -78,7 +78,7 @@ class UserControllerTest {
 	@Test
 	@WithMockUser(username = "alexaasf1010@gmail.com", password = "123", roles = "USER")
 	public void shouldDeleteAUser() throws Exception {
-		String userId = "2";
+		Long userId = 2L;
 		
 		mockMvc.perform(MockMvcRequestBuilders
 				.delete("/users/" + userId)
