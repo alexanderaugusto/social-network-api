@@ -63,6 +63,10 @@ public class User implements UserDetails{
 	@OneToMany(mappedBy = "receiver", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Notification> notifications = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "sender", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Notification> sendedNotifications = new ArrayList<>();
 
 	public User() {
 	}
@@ -137,6 +141,10 @@ public class User implements UserDetails{
 	
 	public List<Notification> getNotifications() {
 		return notifications;
+	}
+	
+	public List<Notification> getSendedNotifications() {
+		return sendedNotifications;
 	}
 
 	public boolean isFollowedBy(User user) {
