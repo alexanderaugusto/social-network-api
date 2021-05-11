@@ -170,17 +170,19 @@ public class UserController {
 		Optional<User> userToFollow = userRepository.findById(id);
 
 		if (userToFollow.isPresent()) {
-			if (userToFollow.get().isFollowedBy(user)) {
+			Optional<Follow> follow = followRepository.findByFollowingAndFollower(user, userToFollow.get());
+			
+			if (follow.isPresent()) {
 				return ResponseEntity.status(403).build();
 			}
 
-			Follow follow = new Follow(authenticatedUser, userToFollow.get());
-			followRepository.save(follow);
+			Follow newFollow = new Follow(user, userToFollow.get());
+			followRepository.save(newFollow);
 			
 			String description = "começou a seguir você";
-			String url = "/profile/" + follow.getFollowing().getId();
-			User receiver = follow.getFollower();
-			User sender = follow.getFollowing();
+			String url = "/profile/" + newFollow.getFollowing().getId();
+			User receiver = newFollow.getFollower();
+			User sender = newFollow.getFollowing();
 			Notification notification = new Notification(description, url, sender, receiver);
 			notificationRepository.save(notification);
 			
@@ -197,17 +199,14 @@ public class UserController {
 		Optional<User> userToUnfollow = userRepository.findById(id);
 
 		if (userToUnfollow.isPresent()) {
-//			if(!userToUnfollow.get().isFollowedBy(loggedUser)) {
-//				return ResponseEntity.status(403).build();
-//			}
-
-			Follow follow = followRepository.findByFollowerAndFollowing(userToUnfollow, authenticatedUser);
-			try {
-				followRepository.deleteById(follow.getId());
-				return ResponseEntity.status(204).build();
-			} catch (NullPointerException e) {
+			Optional<Follow> follow = followRepository.findByFollowingAndFollower(authenticatedUser, userToUnfollow.get());
+			if(follow.isEmpty()) {
 				return ResponseEntity.status(403).build();
 			}
+			
+			followRepository.deleteById(follow.get().getId());
+			
+			return ResponseEntity.status(204).build();
 		}
 
 		return ResponseEntity.status(404).build();
