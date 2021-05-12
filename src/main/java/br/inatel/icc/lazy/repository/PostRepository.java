@@ -13,7 +13,7 @@ public interface PostRepository extends JpaRepository<Post, Long>{
 	@Query(value = "SELECT * FROM Post \r\n"
 			+ "INNER JOIN Users ON Post.owner_id = Users.id \r\n"
 			+ "INNER JOIN Follow ON Post.owner_id = Follow.follower_id \r\n"
-			+ "WHERE Follow.following_id = :id ORDER BY Post.id DESC",
+			+ "WHERE Follow.following_id = :id ORDER BY Post.id",
 			nativeQuery = true)
 	List<Post> findUserTimeline(@Param("id") Long id);
 }
