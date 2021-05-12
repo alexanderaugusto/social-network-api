@@ -201,7 +201,7 @@ public class UserController {
 
 		if (userToUnfollow.isPresent()) {
 			Optional<Follow> follow = followRepository.findByFollowingAndFollower(user, userToUnfollow.get());
-			if(follow.isEmpty()) {
+			if(!follow.isPresent()) {
 				return ResponseEntity.status(403).build();
 			}
 			
