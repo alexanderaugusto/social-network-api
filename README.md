@@ -24,7 +24,7 @@
 </p>
 
 
-## 💻 About
+## 📝 About
 
 This API contains every business rule for a basic social network. To make it clear what it can do, below I present a UML containing all the functionality present in the application. As we can see, the user will be able to create an account, do a login and access all the functionalities of the application, such as: Post a publication, search for other people to follow, view their profile and react and comment on publications.
 
