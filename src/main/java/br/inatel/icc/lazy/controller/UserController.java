@@ -196,10 +196,11 @@ public class UserController {
 	@Transactional
 	public ResponseEntity<?> unfollowUser(Authentication authentication, @PathVariable("id") Long id) {
 		User authenticatedUser = (User) authentication.getPrincipal();
+		User user = userRepository.getOne(authenticatedUser.getId());
 		Optional<User> userToUnfollow = userRepository.findById(id);
 
 		if (userToUnfollow.isPresent()) {
-			Optional<Follow> follow = followRepository.findByFollowingAndFollower(authenticatedUser, userToUnfollow.get());
+			Optional<Follow> follow = followRepository.findByFollowingAndFollower(user, userToUnfollow.get());
 			if(follow.isEmpty()) {
 				return ResponseEntity.status(403).build();
 			}
