@@ -18,7 +18,7 @@
  <a href="#-about">About</a> •
  <a href="#-architecture">Architecture</a> • 
   <a href="#-setup">Setup</a> • 
- <a href="#-tecnologias">Technologies</a> • 
+ <a href="#-technologies ">Technologies</a> • 
  <a href="#-authors">Authors</a> • 
  <a href="#-license">License</a>
 </p>
