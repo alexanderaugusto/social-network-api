@@ -18,7 +18,7 @@
  <a href="#-about">About</a> •
  <a href="#-architecture">Architecture</a> • 
   <a href="#-setup">Setup</a> • 
- <a href="#-technologies ">Technologies</a> • 
+ <a href="#-technologies">Technologies</a> • 
  <a href="#-authors">Authors</a> • 
  <a href="#-license">License</a>
 </p>
@@ -26,49 +26,50 @@
 
 ## 💻 About
 
-IMovel API - é o backend do aplicativo [IMovel](https://github.com/alexanderaugusto/imovel-app.git), onde está toda regra de negócia da aplicação. Nesta parte, fazemos toda conexão com banco de dados, utilizando um ORM ([Sequelize](https://sequelize.org/master/)), processamos informações mais sigilosas, como token de autenticação, etc. e disponbilizamos em formato de API Restful utilizando o [Express](https://expressjs.com/) para manuseio das rotas.
+This API contains every business rule for a basic social network. To make it clear what it can do, below I present a UML containing all the functionality present in the application. As we can see, the user will be able to create an account, do a login and access all the functionalities of the application, such as: Post a publication, search for other people to follow, view their profile and react and comment on publications.
 
-Esta API também está hospedada no [Heroku](https://dashboard.heroku.com/) no endereço https://imovel-api.herokuapp.com/. Além disso, você pode acessar toda documentação das rotas em https://imovel-api.herokuapp.com/api/docs.
+![Lazy UML](https://user-images.githubusercontent.com/51683816/117968007-19d7ae00-b2fc-11eb-8a6b-d58c4774ce32.jpg)
 
 ---
 
 
 ## 💻 Architecture
-fegegege
+
+Here is the summary of the entire architecture of the application, as we can see, I have a React application running on [Vercel](http://vercel.com/) that will always be accessed by the end user. In addition, this React application accesses my API, developed in Spring Boot running in a docker container on Heroku. This API has access to a PostgreSQL database where all application data is stored, and also uploads images to Cloudinary, so that they can be accessed in the cloud. Finally, I have an application using [Spring Boot Admin](https://github.com/codecentric/spring-boot-admin), which monitors my application.
+
+![Lazy Arch](https://user-images.githubusercontent.com/51683816/117969484-d716d580-b2fd-11eb-8ce7-685c93650d0f.png)
 
 ## 🚀 Setup
 
-Este projeto é dividido em três partes:
-1. [Frontend - Mobile](https://github.com/alexanderaugusto/imovel-app.git)
-2. [Frontend - Web](https://github.com/alexanderaugusto/imovel-web.git)
-3. Backend (Neste repositório)
+1. Download [Java Eclipse IDE](https://www.eclipse.org/downloads/)
+2. Clone this repository: git clone https://github.com/alexanderaugusto/social-network-api.git
+3. Open the app on Eclipse IDE
+4. Run the project and access http://localhost:8080
 
 ## 🛠 Technologies
 
-As seguintes ferramentas foram usadas na construção do projeto:
+The following tools were used in the construction of the project:
 
-#### **API**  ([Node JS](https://nodejs.org/docs/latest/api/))
-- **Dependências**:
-  -   **[bcryptjs](https://www.npmjs.com/package/bcryptjs)**
-  -   **[cloudinary](https://cloudinary.com/documentation/node_integration)**
-  -   **[cors](https://www.npmjs.com/package/cors)**
-  -   **[dotenv](https://www.npmjs.com/package/dotenv)**
-  -   **[express](https://expressjs.com/)**
-  -   **[express-async-errors](https://www.npmjs.com/package/express-async-errors)**
-  -   **[factory-girl](https://www.npmjs.com/package/factory-girl)**
-  -   **[faker](https://www.npmjs.com/package/Faker)**
-  -   **[jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)**
-  -   **[multer](https://www.npmjs.com/package/multer)**
-  -   **[multer-storage-cloudinary](https://www.npmjs.com/package/multer-storage-cloudinary)**
-  -   **[nodemailer](https://www.npmjs.com/package/nodemailer)**
-  -   **[nodemailer-express-handlebars](https://www.npmjs.com/package/nodemailer-express-handlebars)**
-  -   **[mysql2](https://www.npmjs.com/package/mysql2)**
-  -   **[pg](https://node-postgres.com/)**
-  -   **[pg-hstore](https://www.npmjs.com/package/pg-hstore)**
-  -   **[sequelize](https://sequelize.org/master/)**
-  -   **[swagger-jsdoc](https://www.npmjs.com/package/swagger-jsdoc)**
-  -   **[swagger-ui-express](https://www.npmjs.com/package/swagger-ui-express)**
-  -   **[yup](https://www.npmjs.com/package/yup)**
+#### **API**  ([Spring Boot](https://spring.io/projects/spring-boot))
+- **Dependencies**:
+  -   **[spring-boot-starter-web](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web)**
+  -   **[spring-boot-starter-test](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test)**
+  -   **[spring-boot-devtools](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools)**
+  -   **[spring-boot-starter-data-jpa](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa)**
+  -   **[h2](https://mvnrepository.com/artifact/com.h2database/h2)**
+  -   **[spring-boot-starter-validation](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation)**
+  -   **[spring-boot-starter-cache](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-cache)**
+  -   **[spring-boot-starter-security](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security)**
+  -   **[jjwt](https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt)**
+  -   **[springfox-swagger2](https://mvnrepository.com/artifact/io.springfox/springfox-swagger2)**
+  -   **[springfox-swagger-ui](https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui)**
+  -   **[cucumber-java](https://mvnrepository.com/artifact/io.cucumber/cucumber-java)**
+  -   **[cucumber-junit](https://mvnrepository.com/artifact/info.cukes/cucumber-junit)**
+  -   **[spring-security-test](https://mvnrepository.com/artifact/org.springframework.security/spring-security-test)**
+  -   **[postgresql](https://mvnrepository.com/artifact/org.postgresql/postgresql)**
+  -   **[cloudinary-http44](https://mvnrepository.com/artifact/com.cloudinary/cloudinary-http44)**
+  -   **[spring-boot-starter-actuator](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator)**
+  -   **[spring-boot-admin-starter-client](https://mvnrepository.com/artifact/de.codecentric/spring-boot-admin-starter-client)**
 
 ---
 
