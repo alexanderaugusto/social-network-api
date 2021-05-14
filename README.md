@@ -6,6 +6,12 @@
   <a href="https://github.com/alexanderaugusto/social-network-api/commits/master">
     <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/alexanderaugusto/social-network-api">
   </a>
+  
+   <a href="https://github.com/alexanderaugusto/social-network-api/actions">
+    <img alt="GitHub Actions" src="https://github.com/alexanderaugusto/social-network-api/workflows/social-network-api/badge.svg">
+  </a>
+    
+
     
    <img alt="License" src="https://img.shields.io/badge/license-MIT-brightgreen">  
 </p>
